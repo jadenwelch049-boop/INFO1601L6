@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <title>Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-wrapper teal" style="padding-left: 10px;">
+        <a href="#!" class="brand-logo">Ajax Demo</a>
+      </div>
+    </nav>
+
+    <main class="row" style="padding: 40px">
+
+      <div class="col s12" style="margin-bottom: 20px;">
+        <button class="btn teal" onclick="alertFun()">Alert</button>
+        <button class="btn teal" onclick="confirmFun()">Confirm</button>
+        <button class="btn teal" onclick="promptFun()">Prompt</button>
+        <input id="myBtn" type="button" class="btn teal" value="Click Me"/>
+      </div>
+
+      <div class="col s12" style="margin-bottom: 20px;">
+        <img id="cageImg" src="https://www.placecage.com/200/300" alt="Nicolas Cage"/>
+      </div>
+
+      <div class="col s12">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Website</th>
+            </tr>
+          </thead>
+          <tbody id="result"></tbody>
+        </table>
+      </div>
+
+      <div id="details" class="col s12" style="margin-top: 20px;"></div>
+
+    </main>
+
+    <script>
+      function alertFun() {
+        alert("Hello !");
+      }
+
+      function confirmFun() {
+        let didConfirm = confirm("Are you sure about that?");
+        if (didConfirm) {
+          alert("You confirmed :)");
+        } else {
+          alert("You did not confirm :(");
+        }
+      }
+
+      function promptFun() {
+        let val = prompt("What is your name?");
+        alert(`You've entered: ${val}`);
+      }
+
+      console.log(window.navigator.cookieEnabled);
+      console.log(window.navigator.onLine);
+      console.log(navigator.appVersion);
+      console.log(navigator.userAgent);
+      console.log(navigator.platform);
+      console.log(window.location.href);
+      console.log(window.location.protocol);
+      console.log(window.location.hostname);
+
+      function redirect(url) {
+        window.location.assign(url);
+      }
+
+      window.onload = function(event) {
+        console.log("Page has loaded");
+      }
+
+      var bob = 'bob';
+      const sally = 'sally';
+      console.log(window.bob === bob);
+      console.log(window.sally === sally);
+
+      function myFun() {
+        alert("hello");
+      }
+
+      function myFun2() {
+        console.log("myFun2 called");
+      }
+
+      function logEventType(event) {
+        console.log(event.type);
+      }
+
+      let myBtn = document.querySelector("#myBtn");
+      myBtn.addEventListener("click", myFun2);
+      myBtn.addEventListener("mouseover", logEventType);
+      myBtn.addEventListener("mouseout", logEventType);
+
+      function loaded() {
+        console.log("img loaded");
+      }
+
+      let cageImg = document.querySelector("#cageImg");
+      cageImg.addEventListener("load", loaded);
+
+      let myobj = { name: "John", balance: 10 };
+
+      function add10(a) {
+        a.balance += 10;
+      }
+
+      console.log(myobj.balance);
+      add10(myobj);
+      console.log(myobj.balance);
+
+      let obj2 = myobj;
+      obj2.name = "Shelly";
+      console.log(myobj.name);
+
+      let obj3 = {};
+      Object.assign(obj3, myobj);
+      obj3.name = 'Smith';
+      console.log(myobj.name, obj3.name);
+
+      function drawDetails(record) {
+        let details = document.querySelector('#details');
+        details.innerHTML = `
+          <h5>${record.name}</h5>
+          <p>Type: ${record.brewery_type}</p>
+          <p>City: ${record.city}</p>
+          <p>State: ${record.state}</p>
+          <p>Country: ${record.country}</p>
+          <p>Phone: ${record.phone}</p>
+          <p><a href="${record.website_url}" target="_blank">${record.website_url}</a></p>
+        `;
+      }
+
+      function drawTable(records) {
+        let result = document.querySelector('#result');
+        let html = '';
+        for (let record of records) {
+          html += `<tr id="${record.id}">
+            <td>${record.id}</td>
+            <td>${record.name}</td>
+            <td>${record.brewery_type}</td>
+            <td><a href="#${record.id}" onclick="getData('https://api.openbrewerydb.org/v1/breweries/${record.id}', drawDetails)">View More Details</a></td>
+          </tr>`;
+        }
+        result.innerHTML = html;
+      }
+
+      async function getData(url, renderFun) {
+        try {
+          let response = await fetch(url);
+          let result = await response.json();
+          renderFun(result);
+        } catch(e) {
+          console.log(e);
+        }
+      }
+
+      getData("https://api.openbrewerydb.org/v1/breweries/search?query=harry", drawTable);
+    </script>
+  </body>
+</html>
